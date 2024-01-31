@@ -1,0 +1,2 @@
+# .gitattributes
+server/package.json text eol=lf
