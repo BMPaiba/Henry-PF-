@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "proyectoFinal",
+            "database": "dbname_wjwz",
+            "username": "dbname_wjwz_user",
+            "password": "fQ8RsPBpGUW3uApfHbXBjECmwW36IRg3"
+        }
+    ]
+}
