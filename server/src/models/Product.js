@@ -43,6 +43,11 @@ module.exports = (sequelize) => {
       type: DataTypes.ARRAY(DataTypes.JSONB),
       allowNull: false,
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    },
   }, {
     timestamps: false,
   });
