@@ -1,11 +1,15 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
+const UserModel = require('./models/User');
+const PostModel = require('./models/Post');
+const ProductModel = require('./models/Product');
+const SpecificationModel = require('./models/Specification');
+const QualificationModel = require('./models/Qualification');
+const BuyModel = require('./models/Buy');
 
 const fs = require('fs');
 const path = require('path');
-const {
-  DB_USER, DB_PASSWORD, DB_HOST,DB_RENDER_URL
-} = process.env;
+const { DB_RENDER_URL } = process.env;
 
 const sequelize = new Sequelize(DB_RENDER_URL, {
   logging: false,
@@ -13,7 +17,7 @@ const sequelize = new Sequelize(DB_RENDER_URL, {
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false, // Puedes ajustar esto según la configuración del servidor PostgreSQL
+      rejectUnauthorized: false,
     },
   },
 });
@@ -35,12 +39,35 @@ let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Country } = sequelize.models;
+UserModel(sequelize);
+ProductModel(sequelize);
+SpecificationModel(sequelize);
+QualificationModel(sequelize);
+PostModel(sequelize);
+BuyModel(sequelize);
 
-// Aca vendrian las relaciones
-// Product.hasMany(Reviews);
+const { Product, Specification, Qualification, User, Post, Buy } = sequelize.models;
+
+
+const Favorites = "Favorites";
+const Shopping = "Shopping";
+
+// Products.belongsToMany(Specifications, {through: relationProductsSpecifications, timestamps: false});
+// Specifications.belongsToMany(Products, {through: relationProductsSpecifications, timestamps: false});
+Specification.belongsTo(Product);
+
+Qualification.belongsTo(Product);
+Qualification.belongsTo(User);
+
+Post.belongsTo(User);
+
+User.belongsToMany(Product, {through: Favorites, timestamps: false});
+Product.belongsToMany(User, {through: Favorites, timestamps: false});
+
+User.belongsToMany(Product, {through: Shopping, timestamps: false});
+Product.belongsToMany(User, {through: Shopping, timestamps: false});
 
 module.exports = {
-  ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize,     // para importart la conexión { conn } = require('./db.js');
+  ...sequelize.models,
+  conn: sequelize,
 };
